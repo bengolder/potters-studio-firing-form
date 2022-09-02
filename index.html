@@ -20,11 +20,13 @@
 
         <div class="form-question text text--phone">
           <label for="phone">Phone number</label>
-          <input type="tel" id="phone" autocomplete="tel" name="phone" required>
+          <p class="help-text">For example: "510-528-3286", "(510) 528-3286", or "5105283286".</p>
+          <input type="tel" id="phone" autocomplete="tel" name="phone" pattern="/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/" required>
         </div>
 
         <fieldset class="form-question radio-options firing_temp">
           <legend>Which temperature?</legend>
+          <p class="help-text">Not sure? <a href="./info#firing-temperatures" target="_blank">Learn more about firing temperatures</a>.</p>
           <label class="radio-option">
             <input type="radio" name="firing_temp" value="low" required>
             LOW/Cone 05/Bisque
@@ -53,6 +55,12 @@
 
         <fieldset class="form-question multi-row measurements">
           <legend>How big are your pieces?</legend>
+          <p class="help-text">
+            Round to the nearest inch. Unlike our paper firing form, you
+            <strong>do not</strong>
+            need to add 2 inches to the height.
+            <a href="./info#measuring-your-work" target="_blank">Learn more about measuring your pieces</a>.
+          </p>
 
           <div id="form-grid" class="form-grid">
 

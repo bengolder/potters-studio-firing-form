@@ -18,6 +18,12 @@ fieldset {
 
 /* form styles */
 .form-question { margin-bottom: 1rem; }
+.help-text {
+  font-size: 0.8em;
+  margin-top: 0;
+  margin-bottom: 0.25rem;
+  color: #444;
+}
 .form-question.text label,
 .form-question.text input { display: block; }
 .form-question.text label,
@@ -40,3 +46,5 @@ fieldset {
 }
 .form-grid label { font-size: .8rem; }
 .form-grid .form-row + .form-row label { display: none; }
+
+/* validation (:valid, :invalid, :required, etc. */
