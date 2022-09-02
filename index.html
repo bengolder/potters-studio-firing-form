@@ -15,26 +15,26 @@
 
         <div class="form-question text">
           <label for="name">Name</label>
-          <input type="text" id="name" name="name">
+          <input type="text" id="name" name="name" required>
         </div>
 
         <div class="form-question text text--phone">
           <label for="phone">Phone number</label>
-          <input type="tel" id="phone" autocomplete="tel" name="phone">
+          <input type="tel" id="phone" autocomplete="tel" name="phone" required>
         </div>
 
         <fieldset class="form-question radio-options firing_temp">
           <legend>Which temperature?</legend>
           <label class="radio-option">
-            <input type="radio" name="firing_temp" value="low">
+            <input type="radio" name="firing_temp" value="low" required>
             LOW/Cone 05/Bisque
           </label>
           <label class="radio-option">
-            <input type="radio" name="firing_temp" value="mid">
+            <input type="radio" name="firing_temp" value="mid" required>
             MID/Cone 6
           </label>
           <label class="radio-option">
-            <input type="radio" name="firing_temp" value="high" checked>
+            <input type="radio" name="firing_temp" value="high" required checked>
             HIGH/Cone 10
           </label>
         </fieldset>
@@ -42,11 +42,11 @@
         <fieldset class="form-question radio-options radio-options--yes-no used_glazes">
           <legend>Did you use the Potter's Studio Glazes?</legend>
           <label class="radio-option">
-            <input type="radio" name="used_glazes" value="yes">
+            <input type="radio" name="used_glazes" value="yes" required checked>
             Yes
           </label>
           <label class="radio-option">
-            <input type="radio" name="used_glazes" value="no">
+            <input type="radio" name="used_glazes" value="no" required>
             No
           </label>
         </fieldset>
@@ -59,19 +59,19 @@
             <div class="form-row" id="form-row-1">
               <div class="form-column">
                 <label for="length-1">Length</label>
-                <input type="number" name="length" id="length-1" inputmode="numeric" pattern="[0-9]*">
+                <input type="number" name="length" id="length-1" inputmode="numeric" min="1" step="1" required>
               </div>
               <div class="form-column">
                 <label for="width-1">Width</label>
-                <input type="number" name="width" id="width-1" inputmode="numeric" pattern="[0-9]*">
+                <input type="number" name="width" id="width-1" inputmode="numeric" min="1" step="1" required>
               </div>
               <div class="form-column">
                 <label for="height-1">Height</label>
-                <input type="number" name="height" id="height-1" inputmode="numeric" pattern="[0-9]*">
+                <input type="number" name="height" id="height-1" inputmode="numeric" min="1" step="1" required>
               </div>
               <div class="form-column">
                 <label for="count-1">Count</label>
-                <input type="number" name="count" id="count-1" inputmode="numeric" pattern="[0-9]*">
+                <input type="number" name="count" id="count-1" inputmode="numeric" min="1" step="1" required>
               </div>
             </div>
 
@@ -91,7 +91,7 @@
 
         <div class="form-question checkbox">
           <label>
-            <input type="checkbox" name="read_rules" value="yes">
+            <input type="checkbox" name="read_rules" value="yes" required>
             I have read the
             <a href="./info" target="_blank">Firing Tips and Rules</a>
           </label>
@@ -110,20 +110,21 @@
         return `
           <div class="form-column">
             <label for="length-${index}">Length</label>
-            <input type="number" name="length" id="length-${index}" inputmode="numeric" pattern="[0-9]*">
+            <input type="number" name="length" id="length-${index}" inputmode="numeric" min="1" step="1" required>
           </div>
           <div class="form-column">
             <label for="width-${index}">Width</label>
-            <input type="number" name="width" id="width-${index}" inputmode="numeric" pattern="[0-9]*">
+            <input type="number" name="width" id="width-${index}" inputmode="numeric" min="1" step="1" required>
           </div>
           <div class="form-column">
             <label for="height-${index}">Height</label>
-            <input type="number" name="height" id="height-${index}" inputmode="numeric" pattern="[0-9]*">
+            <input type="number" name="height" id="height-${index}" inputmode="numeric" min="1" step="1" required>
           </div>
           <div class="form-column">
             <label for="count-${index}">Count</label>
-            <input type="number" name="count" id="count-${index}" inputmode="numeric" pattern="[0-9]*">
+            <input type="number" name="count" id="count-${index}" inputmode="numeric" min="1" step="1" required>
           </div>
+          <button class="button button--icon remove-row" type="button" title="Remove this row">❌</button>
         `;
       }
       
@@ -140,6 +141,12 @@
         formGrid.appendChild(newRow);
       }
 
+      function removeFormRow(event){
+        event.preventDefault();
+        if (event.target.classList.contains("remove-row")) {
+          event.target.closest(".form-row").remove();
+        }
+      }
 
       // TOTALS CALCULATIONS
       const totalCubicFeetDisplay = document.querySelector(".total-cubic-feet dd");
@@ -206,6 +213,8 @@
         // Add current date & time
         postData.append("Date", currentDateTime.toLocaleDateString('en-US'));
         postData.append("Time", currentDateTime.toLocaleTimeString('en-US'));
+        // Add user agent
+        postData.append("User-agent", navigator.userAgent);
 
         // assuming everything is valid
         const allMeasurements = [];
@@ -246,6 +255,7 @@
       }
 
       // EVENT LISTENERS
+      formGrid.addEventListener("click", removeFormRow);
       addRowButton.addEventListener("click", addFormRow);
       document.querySelector(".measurements").addEventListener("input", updateTotals);
       document.querySelector("form").addEventListener('submit', handleSubmission);        
