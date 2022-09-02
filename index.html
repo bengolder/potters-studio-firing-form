@@ -243,6 +243,16 @@
       
       // SUBMISSION HANDLING
 
+      function handleSubmissionSuccess(response){
+        sessionStorage.setItem("test", "Hello session storage")
+        window.location.href = "./success/";
+      }
+
+
+      function handleSubmissionError(error){
+        console.log('Error!', error.message);
+      }
+
       const FORM_KEY_FORMATTING = {
         "name": "Name",
         "phone": "Phone",
@@ -289,9 +299,19 @@
         postData.append("Contract firing rate", contractFiringRate);
         postData.append("Contract firing charges", contractFiringCharges.toFixed(2));
 
+        
+
+        // set loading animation here
+
+        // store postData for success page or errors
+        const data = {};
+        postData.forEach((value, key) => data[key] = value);
+        sessionStorage.setItem("firing_submission", JSON.stringify(data));
+
+        // send the data
         fetch(scriptURL, { method: 'POST', body: postData})
-          .then(response => console.log('Success!', response))
-          .catch(error => console.error('Error!', error.message));
+          .then(handleSubmissionSuccess)
+          .catch(handleSubmissionError);
       
       }
 

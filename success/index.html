@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Firing Tips & Rules  - Berkeley Potter's Studio</title>
+    <title>Firing Success! - Berkeley Potter's Studio</title>
   </head>
 
   <body>
@@ -17,6 +17,15 @@
 
       <h2>Totals:</h2>
 
+      <pre id="result">
+      </pre>
+
+      <a href="../" class="botton button--cta">Submit a new firing form</a>
     </div>
+    <script>
+      const submissionData = JSON.parse(sessionStorage.getItem("firing_submission"));
+      sessionStorage.removeItem("firing_submission");
+      document.querySelector("#result").innerHTML = JSON.stringify(submissionData, null, 2)
+    </script>
   </body>
 </html>
