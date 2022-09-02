@@ -23,23 +23,6 @@
           <input type="tel" id="phone" autocomplete="tel" name="phone">
         </div>
 
-        <fieldset class="form-question radio-options radio-options--yes-no contract_firing">
-          <legend>Is this contract firing?</legend>
-          <label class="radio-option">
-            <input type="radio" name="contract_firing" value="yes">
-            Yes
-          </label>
-          <label class="radio-option">
-            <input type="radio" name="contract_firing" value="no">
-            No (I'm a member or student)
-          </label>
-        </fieldset>
-
-        <div class="form-question text text--email email hidden">
-          <label for="email">Email</label>
-          <input type="email" id="email" name="email">
-        </div>
-
         <fieldset class="form-question radio-options firing_temp">
           <legend>Which temperature?</legend>
           <label class="radio-option">
@@ -103,11 +86,6 @@
               <dt>Total cubic feet:</dt>
               <dd>0.00</dd>
             </div>
-
-            <div class="total-firing-charges hidden">
-              <dt>Contract firing charges:</dt>
-              <dd>$20.00</dd>
-            </div>
           </dl>
         </div>
 
@@ -162,39 +140,12 @@
         formGrid.appendChild(newRow);
       }
 
-      // CONTRACT FIRING
-      // show some portions input only if contract firing is checked
-      const emailField = document.querySelector(".email");
-      const contractFiringChargesDisplay = document.querySelector(".total-firing-charges");
-
-      function contractFiringInputHandler(event){
-        const inputValue = document.querySelector("[name=contract_firing]:checked").value;
-        if (inputValue == "yes"){
-          emailField.classList.remove("hidden");
-          contractFiringChargesDisplay.classList.remove("hidden");
-        } else if (inputValue == "no") {
-          emailField.classList.add("hidden");
-          contractFiringChargesDisplay.classList.add("hidden");
-        }
-      }
-
 
       // TOTALS CALCULATIONS
       const totalCubicFeetDisplay = document.querySelector(".total-cubic-feet dd");
-      const totalChargesDisplay = document.querySelector(".total-firing-charges dd");
-
-      // CONTRACT FIRING RATES
-      const FIRING_RATES = {
-        "low": 31.5,
-        "mid": 39.5,
-        "high": 47.5,
-        "studio_glaze": 57.0
-      }
 
       let totalCubicInches = 0;
       let totalCubicFeet = 0;
-      let contractFiringRate;
-      let contractFiringCharges = 0;
 
       function updateTotals(event){
         const rows = document.querySelectorAll(".measurements .form-row");
@@ -222,29 +173,12 @@
         }
         totalCubicFeet = totalCubicInches / 1728;
         totalCubicFeetDisplay.innerHTML = totalCubicFeet.toFixed(2);
-
-        // calculate contract firing rates
-        const contractFiringAnswer = document.querySelector("[name=contract_firing]:checked");
-        const isContractFire = contractFiringAnswer ? contractFiringAnswer.value == "yes" : false;
-        if (isContractFire) {
-          const firingTemp = document.querySelector("[name=firing_temp]:checked").value;
-          const usedGlazesAnswer = document.querySelector("[name=used_glazes]:checked");
-          const usedGlazes = usedGlazesAnswer ? usedGlazesAnswer.value == "yes" : false; // defaults to no use of glazes
-          if (usedGlazes) {
-            contractFiringRate = FIRING_RATES["studio_glaze"];
-          } else {
-            contractFiringRate = FIRING_RATES[firingTemp];
-          }
-          contractFiringCharges = Math.max(contractFiringRate * totalCubicFeet, 20.00);
-          totalChargesDisplay.innerHTML = `$${contractFiringCharges.toFixed(2)}`;
-        }
       }
 
       
       // SUBMISSION HANDLING
 
       function handleSubmissionSuccess(response){
-        sessionStorage.setItem("test", "Hello session storage")
         window.location.href = "./success/";
       }
 
@@ -257,7 +191,6 @@
         "name": "Name",
         "phone": "Phone",
         "email": "Email",
-        "contract_firing": "Contract fire?",
         "firing_temp": "Firing temp",
         "used_glazes": "Used glazes?"
       }
@@ -267,8 +200,10 @@
         event.preventDefault();
         const rawData = new FormData(document.querySelector("form"));
         const postData = new FormData();
-        // add current date & time
+        // Add unique ID for each submission 
+        postData.append("Submission ID", Math.random().toString(16).slice(2));
         const currentDateTime = new Date();
+        // Add current date & time
         postData.append("Date", currentDateTime.toLocaleDateString('en-US'));
         postData.append("Time", currentDateTime.toLocaleTimeString('en-US'));
 
@@ -296,10 +231,6 @@
         }
         postData.append("Measurements", measurementRows.join("\n"));
         postData.append("Cubic feet", totalCubicFeet.toFixed(2));
-        postData.append("Contract firing rate", contractFiringRate);
-        postData.append("Contract firing charges", contractFiringCharges.toFixed(2));
-
-        
 
         // set loading animation here
 
@@ -312,15 +243,10 @@
         fetch(scriptURL, { method: 'POST', body: postData})
           .then(handleSubmissionSuccess)
           .catch(handleSubmissionError);
-      
       }
 
       // EVENT LISTENERS
       addRowButton.addEventListener("click", addFormRow);
-      document.querySelector(".contract_firing").addEventListener("input", contractFiringInputHandler);
-      document.querySelector(".contract_firing").addEventListener("input", updateTotals);
-      document.querySelector(".firing_temp").addEventListener("input", updateTotals);
-      document.querySelector(".used_glazes").addEventListener("input", updateTotals);
       document.querySelector(".measurements").addEventListener("input", updateTotals);
       document.querySelector("form").addEventListener('submit', handleSubmission);        
       
