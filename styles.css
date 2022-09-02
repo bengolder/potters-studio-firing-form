@@ -1,0 +1,49 @@
+html {
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-size: 20px;
+  color: #000;
+  background-color: #fff;
+}
+
+.hidden {
+  display: none;
+}
+
+/* form reset  */
+fieldset {
+  border: none;
+  margin: none;
+  padding: 0;
+}
+
+/* form styles */
+.form-question {
+  margin-bottom: 1rem;
+}
+.form-question.text {
+  label,input {
+    display: block;
+  }
+  label {
+    font-weight: bold;
+    margin-bottom: .25rem;
+  }
+}
+.form-question legend {
+  font-weight: bold;
+  margin-bottom: .25rem;
+}
+
+/* form-grid */
+.form-grid .form-column { display: inline-block; }
+.form-grid .form-column label,input {
+  display: block;
+  max-width: 2.5rem;
+}
+.form-grid label { font-size: .8rem; }
+.form-grid  .form-row + .form-row label { display: none; }
+
+.radio-option {
+  display: block;
+  margin-bottom: .25rem;
+}
