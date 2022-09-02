@@ -5,21 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Firing Submission Form - Berkeley Potter's Studio</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;700&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="./styles.css">
   </head>
 
   <body>
     <div class="container">
       <form action="#" method="POST">
-        <h1>Berkeley Potter's Studio Firing Submission Form</h1>
+        <div class="logo--header">
+          <img src="./img/TPS-Logo-Black-Letters-Only.png" alt="The Potter's Studio Logo">
+        </div>
+        <h1>Firing Form</h1>
 
-        <div class="form-question text">
-          <label for="name">Name</label>
+        <div class="form-question text name">
+          <label for="name">What is your name?</label>
           <input type="text" id="name" name="name" required>
         </div>
 
-        <div class="form-question text text--phone">
-          <label for="phone">Phone number</label>
+        <div class="form-question text text--phone phone">
+          <label for="phone">What is your phone number?</label>
           <p class="help-text">For example: "510-528-3286", "(510) 528-3286", or "5105283286".</p>
           <input type="tel" id="phone" autocomplete="tel" name="phone" pattern="/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/" required>
         </div>
@@ -27,15 +35,15 @@
         <fieldset class="form-question radio-options firing_temp">
           <legend>Which temperature?</legend>
           <p class="help-text">Not sure? <a href="./info#firing-temperatures" target="_blank">Learn more about firing temperatures</a>.</p>
-          <label class="radio-option">
+          <label class="radio-option button">
             <input type="radio" name="firing_temp" value="low" required>
             LOW/Cone 05/Bisque
           </label>
-          <label class="radio-option">
+          <label class="radio-option button">
             <input type="radio" name="firing_temp" value="mid" required>
             MID/Cone 6
           </label>
-          <label class="radio-option">
+          <label class="radio-option button">
             <input type="radio" name="firing_temp" value="high" required checked>
             HIGH/Cone 10
           </label>
@@ -43,11 +51,11 @@
 
         <fieldset class="form-question radio-options radio-options--yes-no used_glazes">
           <legend>Did you use the Potter's Studio Glazes?</legend>
-          <label class="radio-option">
+          <label class="radio-option button">
             <input type="radio" name="used_glazes" value="yes" required checked>
             Yes
           </label>
-          <label class="radio-option">
+          <label class="radio-option button">
             <input type="radio" name="used_glazes" value="no" required>
             No
           </label>
@@ -85,20 +93,20 @@
 
           </div>
 
-          <button id="form-grid-add-row-button" type="button">➕ Add a row</button>
+          <button id="form-grid-add-row-button" type="button" class="button button--icon">+ Add a row</button>
         </fieldset>
 
         <div class="totals">
           <dl>
             <div class="total-cubic-feet">
-              <dt>Total cubic feet:</dt>
-              <dd>0.00</dd>
+              <dt>Total volume:</dt>
+              <dd>0.00 ft<sup>3</sup></dd>
             </div>
           </dl>
         </div>
 
         <div class="form-question checkbox">
-          <label>
+          <label class="checkbox-option button">
             <input type="checkbox" name="read_rules" value="yes" required>
             I have read the
             <a href="./info" target="_blank">Firing Tips and Rules</a>
@@ -132,7 +140,7 @@
             <label for="count-${index}">Count</label>
             <input type="number" name="count" id="count-${index}" inputmode="numeric" min="1" step="1" required>
           </div>
-          <button class="button button--icon remove-row" type="button" title="Remove this row">❌</button>
+          <button class="button button--icon remove-row" type="button" title="Remove this row">✕</button>
         `;
       }
       
@@ -140,8 +148,8 @@
       function addFormRow(event){
         event.preventDefault();
         const existingRowCount = formGrid.querySelectorAll(".form-row").length;
-        const newRowIndex = existingRowCount + 1
-        const newRow = document.createElement('div')
+        const newRowIndex = existingRowCount + 1;
+        const newRow = document.createElement('div');
         newRow.id = `form-row-${newRowIndex}`;
         newRow.classList.add("form-row");
         newRow.innerHTML = renderFormRow(newRowIndex);
@@ -187,7 +195,7 @@
           }
         }
         totalCubicFeet = totalCubicInches / 1728;
-        totalCubicFeetDisplay.innerHTML = totalCubicFeet.toFixed(2);
+        totalCubicFeetDisplay.innerHTML = `${totalCubicFeet.toFixed(2)} ft<sup>3</sup>`;
       }
 
       
@@ -208,7 +216,7 @@
         "email": "Email",
         "firing_temp": "Firing temp",
         "used_glazes": "Used glazes?"
-      }
+      };
 
       const scriptURL = "https://script.google.com/macros/s/AKfycby5wwnnM1H2R3UxUJQbhtC4HOXegkI5QNFal8DhVkvN0H7pAK3W7kdxvo2occ2fyK8Z/exec"
       function handleSubmission(event){
@@ -234,7 +242,7 @@
             postData.append(formattedKey, value);
           } else if (key == "length") {
             // new measurement row
-            measurementRow = [value]
+            measurementRow = [value];
             allMeasurements.push(measurementRow);
           } else if (["width", "height", "count"].includes(key)) {
             measurementRow.push(value);
@@ -266,8 +274,7 @@
       formGrid.addEventListener("click", removeFormRow);
       addRowButton.addEventListener("click", addFormRow);
       document.querySelector(".measurements").addEventListener("input", updateTotals);
-      document.querySelector("form").addEventListener('submit', handleSubmission);        
-      
+      document.querySelector("form").addEventListener('submit', handleSubmission);
     </script>
   </body>
 </html>

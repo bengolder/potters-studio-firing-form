@@ -1,6 +1,7 @@
 html {
-  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-family: 'Mukta', sans-serif;
   font-size: 20px;
+  /* line-height: 1.6em; */
   color: #000;
   background-color: #fff;
 }
@@ -9,20 +10,47 @@ html {
   display: none;
 }
 
+.container {
+  max-width: 18rem;
+  margin: 0 auto;
+}
+img { width: 100%; }
+.logo--header {
+  width: 5rem;
+  margin: 0 auto;
+  padding: 0.5rem 0;
+}
+.logo--header + h1 { margin-top: 0; }
+h1 { line-height: 1.3em; margin-bottom: 0.4em; }
+
+dt, dd { display: inline-block; }
+dd { margin: 0; }
+
 /* form reset  */
 fieldset {
   border: none;
   margin: none;
   padding: 0;
 }
+input {
+  font-size: 1rem;
+  font-family: inherit;
+}
+input[type="text"], input[type="number"], input[type="tel"], input[type="email"] {
+  font-size: 1rem;
+  font-family: inherit;
+  padding: 0.2em 0.3em;
+  border: 2px solid #000;
+  border-radius: 0;
+}
 
 /* form styles */
 .form-question { margin-bottom: 1rem; }
 .help-text {
-  font-size: 0.8em;
+  font-size: 0.82em;
   margin-top: 0;
   margin-bottom: 0.25rem;
-  color: #444;
+  color: #555;
 }
 .form-question.text label,
 .form-question.text input { display: block; }
@@ -31,11 +59,36 @@ fieldset {
   font-weight: bold;
   margin-bottom: .25rem;
 }
+.name input { width: 100%; }
+.phone input { width: 6.5em; }
+
+/* buttons */
+
+button, .button {
+  font-size: 1rem;
+  font-family: inherit;
+  padding: 0.2em .7em;
+  border-radius: .4em;
+  border: 2px solid #000;
+  cursor: pointer;
+  background-color: #fff;
+  display: inline-block;
+}
+.button--cta {
+  background-color: #000;
+  color: #fff;
+}
+.button--icon {
+  font-size: 0.8rem;
+  padding: 0 0.5em;
+}
+
 
 .radio-option {
-  display: block;
   margin-bottom: .25rem;
 }
+
+
 
 /* form-grid */
 .form-grid .form-column { display: inline-block; }
@@ -43,8 +96,15 @@ fieldset {
 .form-grid .form-column input {
   display: block;
   max-width: 2.5rem;
+  /* font-size: 0.8rem; */
+  padding: 0.1em 0 0.1em 0.3em;
+  width: 2em;
 }
-.form-grid label { font-size: .8rem; }
+.form-grid label {
+  font-size: .8rem;
+  font-weight: bold;
+}
+.form-grid .form-row { margin-top: .25rem; }
 .form-grid .form-row + .form-row label { display: none; }
 
 /* validation (:valid, :invalid, :required, etc. */
