@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Firing Submission Form - Berkeley Potter's Studio</title>
+
+  </head>
+
+  <body>
+    <div class="container">
+      <form action="#" method="POST">
+        <h1>Berkeley Potter's Studio Firing Submission Form</h1>
+
+        <div class="form-question text">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name">
+        </div>
+
+        <div class="form-question text text--phone">
+          <label for="phone">Phone number</label>
+          <input type="tel" id="phone" autocomplete="tel" name="phone">
+        </div>
+
+        <fieldset class="form-question radio-options radio-options--yes-no contract_firing">
+          <legend>Is this contract firing?</legend>
+          <label class="radio-option">
+            <input type="radio" name="contract_firing" value="yes">
+            Yes
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="contract_firing" value="no">
+            No (I'm a member or student)
+          </label>
+        </fieldset>
+
+        <div class="form-question text text--email email hidden">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email">
+        </div>
+
+        <fieldset class="form-question radio-options firing_temp">
+          <legend>Which temperature?</legend>
+          <label class="radio-option">
+            <input type="radio" name="firing_temp" value="low">
+            LOW/Cone 05/Bisque
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="firing_temp" value="mid">
+            MID/Cone 6
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="firing_temp" value="high" checked>
+            HIGH/Cone 10
+          </label>
+        </fieldset>
+
+        <fieldset class="form-question radio-options radio-options--yes-no used_glazes">
+          <legend>Did you use the Potter's Studio Glazes?</legend>
+          <label class="radio-option">
+            <input type="radio" name="used_glazes" value="yes">
+            Yes
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="used_glazes" value="no">
+            No
+          </label>
+        </fieldset>
+
+        <fieldset class="form-question multi-row measurements">
+          <legend>How big are your pieces?</legend>
+
+          <div id="form-grid" class="form-grid">
+
+            <div class="form-row" id="form-row-1">
+              <div class="form-column">
+                <label for="length-1">Length</label>
+                <input type="number" name="length" id="length-1" inputmode="numeric" pattern="[0-9]*">
+              </div>
+              <div class="form-column">
+                <label for="width-1">Width</label>
+                <input type="number" name="width" id="width-1" inputmode="numeric" pattern="[0-9]*">
+              </div>
+              <div class="form-column">
+                <label for="height-1">Height</label>
+                <input type="number" name="height" id="height-1" inputmode="numeric" pattern="[0-9]*">
+              </div>
+              <div class="form-column">
+                <label for="count-1">Count</label>
+                <input type="number" name="count" id="count-1" inputmode="numeric" pattern="[0-9]*">
+              </div>
+            </div>
+
+          </div>
+
+          <button id="form-grid-add-row-button" type="button">➕ Add a row</button>
+        </fieldset>
+
+        <div class="totals">
+          <dl>
+            <div class="total-cubic-feet">
+              <dt>Total cubic feet:</dt>
+              <dd>0.00</dd>
+            </div>
+
+            <div class="total-firing-charges hidden">
+              <dt>Contract firing charges:</dt>
+              <dd>$20.00</dd>
+            </div>
+          </dl>
+        </div>
+
+        <div class="form-question checkbox">
+          <label>
+            <input type="checkbox" name="read_rules" value="yes">
+            I have read the
+            <a href="/firings/info" target="_blank">Firing Tips and Rules</a>
+          </label>
+        </div>
+
+        <button type="submit" class="button button--cta">Submit</button>
+      </form>
+
+    </div>
+    <script>
+      // PIECE MEASUREMENT GRID
+      // setup form grid with the ability to add new rows
+      const formGrid = document.querySelector('#form-grid');
+      const addRowButton = document.querySelector('#form-grid-add-row-button')
+      function renderFormRow(index) {
+        return `
+          <div class="form-column">
+            <label for="length-${index}">Length</label>
+            <input type="number" name="length" id="length-${index}" inputmode="numeric" pattern="[0-9]*">
+          </div>
+          <div class="form-column">
+            <label for="width-${index}">Width</label>
+            <input type="number" name="width" id="width-${index}" inputmode="numeric" pattern="[0-9]*">
+          </div>
+          <div class="form-column">
+            <label for="height-${index}">Height</label>
+            <input type="number" name="height" id="height-${index}" inputmode="numeric" pattern="[0-9]*">
+          </div>
+          <div class="form-column">
+            <label for="count-${index}">Count</label>
+            <input type="number" name="count" id="count-${index}" inputmode="numeric" pattern="[0-9]*">
+          </div>
+        `;
+      }
+      
+
+      function addFormRow(event){
+        event.preventDefault();
+        const existingRowCount = formGrid.querySelectorAll(".form-row").length;
+        const newRowIndex = existingRowCount + 1
+        const newRow = document.createElement('div')
+        newRow.id = `form-row-${newRowIndex}`;
+        newRow.classList.add("form-row");
+        newRow.innerHTML = renderFormRow(newRowIndex);
+
+        formGrid.appendChild(newRow);
+      }
+
+      // CONTRACT FIRING
+      // show some portions input only if contract firing is checked
+      const emailField = document.querySelector(".email");
+      const contractFiringChargesDisplay = document.querySelector(".total-firing-charges");
+
+      function contractFiringInputHandler(event){
+        const inputValue = document.querySelector("[name=contract_firing]:checked").value;
+        if (inputValue == "yes"){
+          emailField.classList.remove("hidden");
+          contractFiringChargesDisplay.classList.remove("hidden");
+        } else if (inputValue == "no") {
+          emailField.classList.add("hidden");
+          contractFiringChargesDisplay.classList.add("hidden");
+        }
+      }
+
+
+      // TOTALS CALCULATIONS
+      const totalCubicFeetDisplay = document.querySelector(".total-cubic-feet dd");
+      const totalChargesDisplay = document.querySelector(".total-firing-charges dd");
+
+      // CONTRACT FIRING RATES
+      const FIRING_RATES = {
+        "low": 31.5,
+        "mid": 39.5,
+        "high": 47.5,
+        "studio_glaze": 57.0
+      }
+
+      let totalCubicInches = 0;
+      let totalCubicFeet = 0;
+      let contractFiringRate;
+      let contractFiringCharges = 0;
+
+      function updateTotals(event){
+        const rows = document.querySelectorAll(".measurements .form-row");
+        // reset values
+        totalCubicInches = 0;
+
+        for (const row of rows) {
+          const values = [];
+          const inputs = row.querySelectorAll("input[type=number]");
+          for (let i = 0; i < inputs.length; i++) {
+            const input = inputs[i];
+            let value = Number(input.value);
+            if (!value || value <= 0) {
+              break;
+            }
+            if (input.name == "height"){
+              value += 2;
+            }
+            values.push(value);
+          }
+          if (values.length == inputs.length) {
+            const rowTotal = values.reduce((a, b) => a * b, 1);
+            totalCubicInches += rowTotal;
+          }
+        }
+        totalCubicFeet = totalCubicInches / 1728;
+        totalCubicFeetDisplay.innerHTML = totalCubicFeet.toFixed(2);
+
+        // calculate contract firing rates
+        const contractFiringAnswer = document.querySelector("[name=contract_firing]:checked");
+        const isContractFire = contractFiringAnswer ? contractFiringAnswer.value == "yes" : false;
+        if (isContractFire) {
+          const firingTemp = document.querySelector("[name=firing_temp]:checked").value;
+          const usedGlazesAnswer = document.querySelector("[name=used_glazes]:checked");
+          const usedGlazes = usedGlazesAnswer ? usedGlazesAnswer.value == "yes" : false; // defaults to no use of glazes
+          if (usedGlazes) {
+            contractFiringRate = FIRING_RATES["studio_glaze"];
+          } else {
+            contractFiringRate = FIRING_RATES[firingTemp];
+          }
+          contractFiringCharges = Math.max(contractFiringRate * totalCubicFeet, 20.00);
+          totalChargesDisplay.innerHTML = `$${contractFiringCharges.toFixed(2)}`;
+        }
+      }
+
+      
+      // SUBMISSION HANDLING
+
+      const FORM_KEY_FORMATTING = {
+        "name": "Name",
+        "phone": "Phone",
+        "email": "Email",
+        "contract_firing": "Contract fire?",
+        "firing_temp": "Firing temp",
+        "used_glazes": "Used glazes?"
+      }
+
+      const scriptURL = "https://script.google.com/macros/s/AKfycby5wwnnM1H2R3UxUJQbhtC4HOXegkI5QNFal8DhVkvN0H7pAK3W7kdxvo2occ2fyK8Z/exec"
+      function handleSubmission(event){
+        event.preventDefault();
+        const rawData = new FormData(document.querySelector("form"));
+        const postData = new FormData();
+        // add current date & time
+        const currentDateTime = new Date();
+        postData.append("Date", currentDateTime.toLocaleDateString('en-US'));
+        postData.append("Time", currentDateTime.toLocaleTimeString('en-US'));
+
+        // assuming everything is valid
+        const allMeasurements = [];
+        let measurementRow;
+        for (const [key, value] of rawData.entries()) {
+          const formattedKey = FORM_KEY_FORMATTING[key];
+          // handle key formatting
+          if (formattedKey) {
+            postData.append(formattedKey, value);
+          } else if (key == "length") {
+            // new measurement row
+            measurementRow = [value]
+            allMeasurements.push(measurementRow);
+          } else if (["width", "height", "count"].includes(key)) {
+            measurementRow.push(value);
+          }
+        }
+
+        // format measurements
+        let measurementRows = [];
+        for (const [length, width, height, count] of allMeasurements) {
+          measurementRows.push(`${count} pieces, ${length}x${width}x${height}"`);
+        }
+        postData.append("Measurements", measurementRows.join("\n"));
+        postData.append("Cubic feet", totalCubicFeet.toFixed(2));
+        postData.append("Contract firing rate", contractFiringRate);
+        postData.append("Contract firing charges", contractFiringCharges.toFixed(2));
+
+        fetch(scriptURL, { method: 'POST', body: postData})
+          .then(response => console.log('Success!', response))
+          .catch(error => console.error('Error!', error.message));
+      
+      }
+
+      // EVENT LISTENERS
+      addRowButton.addEventListener("click", addFormRow);
+      document.querySelector(".contract_firing").addEventListener("input", contractFiringInputHandler);
+      document.querySelector(".contract_firing").addEventListener("input", updateTotals);
+      document.querySelector(".firing_temp").addEventListener("input", updateTotals);
+      document.querySelector(".used_glazes").addEventListener("input", updateTotals);
+      document.querySelector(".measurements").addEventListener("input", updateTotals);
+      document.querySelector("form").addEventListener('submit', handleSubmission);        
+      
+    </script>
+  </body>
+</html>
