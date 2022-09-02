@@ -29,7 +29,7 @@
         <div class="form-question text text--phone phone">
           <label for="phone">What is your phone number?</label>
           <p class="help-text">For example: "510-528-3286", "(510) 528-3286", or "5105283286".</p>
-          <input type="tel" id="phone" autocomplete="tel" name="phone" pattern="/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/" required>
+          <input type="tel" id="phone" autocomplete="tel" name="phone" pattern="(?\d{3})?[-\s\.]?\d{3}[-\s\.]?\d{4,6}" required>
         </div>
 
         <fieldset class="form-question radio-options firing_temp">
@@ -278,3 +278,8 @@
     </script>
   </body>
 </html>
+
+<!-- 
+[0-9]{3} [0-9]{3} [0-9]{4}
+[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}
+(?\d{3})?[-\s\.]?\d{3}[-\s\.]?\d{4,6} -->

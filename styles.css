@@ -77,9 +77,11 @@ button, .button {
   background-color: #fff;
   display: inline-block;
 }
+a.button { text-decoration: none; }
 .button--cta {
   background-color: #000;
   color: #fff;
+  padding: 0.3em 1em;
 }
 .button--icon {
   font-size: 0.8rem;
