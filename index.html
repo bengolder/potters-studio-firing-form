@@ -8,7 +8,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;700&family=Roboto+Mono:wght@700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="./styles.css">
   </head>
@@ -19,7 +19,7 @@
         <div class="logo--header">
           <img src="./img/TPS-Logo-Black-Letters-Only.png" alt="The Potter's Studio Logo">
         </div>
-        <h1>Firing Form</h1>
+        <h1>🔥 Firing Form 🔥</h1>
 
         <div class="form-question text name">
           <label for="name">What is your name?</label>
@@ -29,7 +29,8 @@
         <div class="form-question text text--phone phone">
           <label for="phone">What is your phone number?</label>
           <p class="help-text">For example: "510-528-3286", "(510) 528-3286", or "5105283286".</p>
-          <input type="tel" id="phone" autocomplete="tel" name="phone" pattern="(?\d{3})?[-\s\.]?\d{3}[-\s\.]?\d{4,6}" required>
+          <input type="tel" id="phone" autocomplete="tel" name="phone" pattern="\(?\d{3}\)?[-\s\.]?\d{3}[-\s\.]?\d{4,6}" required>
+          <!-- Regex checking: https://regex101.com/r/iZgVGu/1 -->
         </div>
 
         <fieldset class="form-question radio-options firing_temp">
@@ -43,7 +44,7 @@
             <input type="radio" name="firing_temp" value="mid" required>
             MID/Cone 6
           </label>
-          <label class="radio-option button">
+          <label class="radio-option button checked">
             <input type="radio" name="firing_temp" value="high" required checked>
             HIGH/Cone 10
           </label>
@@ -51,7 +52,7 @@
 
         <fieldset class="form-question radio-options radio-options--yes-no used_glazes">
           <legend>Did you use the Potter's Studio Glazes?</legend>
-          <label class="radio-option button">
+          <label class="radio-option button checked">
             <input type="radio" name="used_glazes" value="yes" required checked>
             Yes
           </label>
@@ -113,11 +114,48 @@
           </label>
         </div>
 
-        <button type="submit" class="button button--cta">Submit</button>
+        <button type="submit" class="button button--cta">✓ Submit</button>
+        <div class="loading-animation hidden">
+          <img src="./img/spinning-arrow.gif" alt="loading">
+        </div>
       </form>
 
     </div>
+
+
+
     <script>
+
+      // *************** JAVASCRIPT *****************************
+      // - style radio & checkbox containers when they are selected
+      // - allow users to create additional rows in the measurement form grid
+      // - calculate total volume from entered measurements
+      // - stop default behavior of submissions
+      // - format form data and send to google spreadsheet
+      // - store form data in session storage for success page
+      // - show loading animation
+
+      const submitButton = document.querySelector("button[type=submit]");
+      const loadingAnimation = document.querySelector(".loading-animation");
+
+      // Radio & checkbox styling
+      function updateRadioAndCheckboxClasses(event){
+        if (["radio", "checkbox"].includes(event.target.type)){
+          // we need to update classes on all the other radios or checkboxes within this group
+          const container = event.target.closest(".form-question");
+          const checkboxOrRadioInputs = container.querySelectorAll("input[type=radio],input[type=checkbox]");
+          for (inputElem of checkboxOrRadioInputs){
+            const containingLabel = inputElem.closest("label");
+            if (inputElem.checked) {
+              containingLabel.classList.add("checked");
+            } else {
+              containingLabel.classList.remove("checked");
+            }
+          }
+        }
+      }
+
+
       // PIECE MEASUREMENT GRID
       // setup form grid with the ability to add new rows
       const formGrid = document.querySelector('#form-grid');
@@ -202,11 +240,15 @@
       // SUBMISSION HANDLING
 
       function handleSubmissionSuccess(response){
+        submitButton.classList.remove("hidden");
+        loadingAnimation.classList.add("hidden");
         window.location.href = "./success/";
       }
 
 
       function handleSubmissionError(error){
+        submitButton.classList.remove("hidden");
+        loadingAnimation.classList.add("hidden");
         console.log('Error!', error.message);
       }
 
@@ -257,7 +299,10 @@
         postData.append("Measurements", measurementRows.join("\n"));
         postData.append("Cubic feet", totalCubicFeet.toFixed(2));
 
-        // set loading animation here
+        // replace submit button with a loading animation
+        submitButton.classList.add("hidden");
+        loadingAnimation.classList.remove("hidden");
+
 
         // store postData for success page or errors
         const data = {};
@@ -271,6 +316,7 @@
       }
 
       // EVENT LISTENERS
+      document.querySelector("form").addEventListener("click", updateRadioAndCheckboxClasses);
       formGrid.addEventListener("click", removeFormRow);
       addRowButton.addEventListener("click", addFormRow);
       document.querySelector(".measurements").addEventListener("input", updateTotals);
@@ -278,8 +324,3 @@
     </script>
   </body>
 </html>
-
-<!-- 
-[0-9]{3} [0-9]{3} [0-9]{4}
-[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}
-(?\d{3})?[-\s\.]?\d{3}[-\s\.]?\d{4,6} -->

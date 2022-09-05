@@ -8,30 +8,78 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;700&family=Roboto+Mono:wght@700&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="../styles.css">
   </head>
 
-  <body>
+  <body class="success">
     <div class="container">
 
       <h1>Your firing form has been submitted!</h1>
-      <h2>Firing type:</h2>
 
-      <h2>Pieces:</h2>
+      <div class="summary-report">
+        <div class="summary submission-id">
+          <dt>Confirmation code</dt>
+          <dd></dd>
+        </div>
+        <div class="summary date">
+          <dt>Date</dt>
+          <dd></dd>
+        </div>
+        <div class="summary time">
+          <dt>Time</dt>
+          <dd></dd>
+        </div>
+        <div class="summary name">
+          <dt>Name</dt>
+          <dd></dd>
+        </div>
+        <div class="summary phone">
+          <dt>Phone number</dt>
+          <dd></dd>
+        </div>
+        <div class="summary firing-temp">
+          <dt>Firing temp</dt>
+          <dd></dd>
+        </div>
+        <div class="summary used-glazes">
+          <dt>Used studio glazes?</dt>
+          <dd></dd>
+        </div>
+        <div class="summary total-volume">
+          <dt>Total cubic feet</dt>
+          <dd></dd>
+        </div>
+        <div class="summary measurements">
+          <dt>Measurements</dt>
+          <dd></dd>
+        </div>
+      </div>
 
-      <h2>Totals:</h2>
-
-      <pre id="result">
-      </pre>
-
-      <a href="../" class="button button--cta">Submit a new firing form →</a>
+      <a href="../" class="button button--cta">🔥 Submit a new firing form →</a>
     </div>
     <script>
       const submissionData = JSON.parse(sessionStorage.getItem("firing_submission"));
       sessionStorage.removeItem("firing_submission");
-      document.querySelector("#result").innerHTML = JSON.stringify(submissionData, null, 2)
+
+      const displayKeys = {
+        "Submission ID": "submission-id",
+        "Date": "date",
+        "Time": "time",
+        "Name": "name",
+        "Phone": "phone",
+        "Firing temp": "firing-temp",
+        "Used glazes?": "used-glazes",
+        "Measurements": "measurements",
+        "Cubic feet": "total-volume"
+      };
+
+      if (submissionData){
+        for ([jsonKey, className] of Object.entries(displayKeys)) {
+          document.querySelector(`.${className} dd`).innerHTML = submissionData[jsonKey];
+        }
+      }
     </script>
   </body>
 </html>
