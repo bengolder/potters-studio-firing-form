@@ -62,8 +62,7 @@ input[type="text"], input[type="number"], input[type="tel"], input[type="email"]
   margin-bottom: .25rem;
 }
 .name input {
-  width: 100%;
-  max-width: 15em;
+  width: 14em;
 }
 .phone input { width: 6.5em; }
 
@@ -89,6 +88,7 @@ button:active, .button:active {
 a.button { text-decoration: none; }
 .button--cta {
   background-color: #39352d;
+  border-color: #39352d;
   color: #fff;
   padding: 0.3em 1em;
 }
