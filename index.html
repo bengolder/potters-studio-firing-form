@@ -35,7 +35,7 @@
 
         <fieldset class="form-question radio-options firing_temp">
           <legend>Which temperature?</legend>
-          <p class="help-text">Not sure? <a href="./info#firing-temperatures" target="_blank">Learn more about firing temperatures</a>.</p>
+          <p class="help-text">Not sure? <a href="./info#firing-temperatures">Learn more about firing temperatures</a>.</p>
           <label class="radio-option button">
             <input type="radio" name="firing_temp" value="low" required>
             LOW/Cone 05/Bisque
@@ -65,10 +65,9 @@
         <fieldset class="form-question multi-row measurements">
           <legend>How big are your pieces?</legend>
           <p class="help-text">
-            Round to the nearest inch. Unlike our paper firing form, you
-            <strong>do not</strong>
-            need to add 2 inches to the height.
-            <a href="./info#measuring-your-work" target="_blank">Learn more about measuring your pieces</a>.
+            Round to the nearest inch. Unlike the paper firing form, 
+            <strong>*you do not need to add 2 inches</strong> to the height.
+            <a href="./info#measuring-your-work">Learn more about measuring your pieces</a>.
           </p>
 
           <div id="form-grid" class="form-grid">
@@ -83,11 +82,11 @@
                 <input type="number" name="width" id="width-1" inputmode="numeric" min="1" step="1" required>
               </div>
               <div class="form-column">
-                <label for="height-1">Height</label>
+                <label for="height-1">Height*</label>
                 <input type="number" name="height" id="height-1" inputmode="numeric" min="1" step="1" required>
               </div>
               <div class="form-column">
-                <label for="count-1">Count</label>
+                <label for="count-1">Quantity</label>
                 <input type="number" name="count" id="count-1" inputmode="numeric" min="1" step="1" required>
               </div>
             </div>
@@ -110,7 +109,7 @@
           <label class="checkbox-option button">
             <input type="checkbox" name="read_rules" value="yes" required>
             I have read the
-            <a href="./info" target="_blank">Firing Tips and Rules</a>
+            <a href="./info">Firing Tips and Rules</a>
           </label>
         </div>
 
@@ -150,6 +149,17 @@
         }
       }
 
+      // Assume no glazes are used if bisque is selected
+      function assumeNoGlazeIfBisque(event){
+        // if someone checked "LOW/Cone 05/Bisque"
+        if( event.target.name == "firing_temp" && event.target.value == "low" && event.target.checked ){
+          // set "used_glazes" to "no" & simulate a click
+          const noGlazeInput = document.querySelector("[name=used_glazes][value=no]");
+          noGlazeInput.checked = true;
+          noGlazeInput.click();
+        }
+      }
+
 
       // PIECE MEASUREMENT GRID
       // setup form grid with the ability to add new rows
@@ -159,19 +169,19 @@
         return `
           <div class="form-column">
             <label for="length-${index}">Length</label>
-            <input type="number" name="length" id="length-${index}" inputmode="numeric" min="1" step="1" required>
+            <input type="number" name="length" id="length-${index}" inputmode="numeric" min="1" step="1">
           </div>
           <div class="form-column">
             <label for="width-${index}">Width</label>
-            <input type="number" name="width" id="width-${index}" inputmode="numeric" min="1" step="1" required>
+            <input type="number" name="width" id="width-${index}" inputmode="numeric" min="1" step="1">
           </div>
           <div class="form-column">
             <label for="height-${index}">Height</label>
-            <input type="number" name="height" id="height-${index}" inputmode="numeric" min="1" step="1" required>
+            <input type="number" name="height" id="height-${index}" inputmode="numeric" min="1" step="1">
           </div>
           <div class="form-column">
             <label for="count-${index}">Count</label>
-            <input type="number" name="count" id="count-${index}" inputmode="numeric" min="1" step="1" required>
+            <input type="number" name="count" id="count-${index}" inputmode="numeric" min="1" step="1">
           </div>
           <button class="button button--icon remove-row" type="button" title="Remove this row">✕</button>
         `;
@@ -194,6 +204,30 @@
         event.preventDefault();
         if (event.target.classList.contains("remove-row")) {
           event.target.closest(".form-row").remove();
+        }
+      }
+
+      function requireInputIgnoreBlankRows(event){
+        // if the change occured on a number input, and it has a value, ensure the whole row is required
+        if (event.target.type == "number") {
+          // get all number inputs in parent row
+          const allInputsInRow = event.target.closest(".form-row").querySelectorAll("input[type=number]");
+          let aValueIsPresent = false;
+          for (const inputElem of allInputsInRow) {
+            if (Number(inputElem.value)) {
+              aValueIsPresent = true;
+              break;
+            }
+          }
+          if (aValueIsPresent) {
+            for (const inputElem of allInputsInRow) {
+              inputElem.required = true;
+            }
+          } else {
+            for (const inputElem of allInputsInRow) {
+              inputElem.required = false;
+            }
+          }
         }
       }
 
@@ -273,16 +307,20 @@
         const allMeasurements = [];
         let measurementRow;
         for (const [key, value] of rawData.entries()) {
-          const formattedKey = FORM_KEY_FORMATTING[key];
-          // handle key formatting
-          if (formattedKey) {
-            postData.append(formattedKey, value);
-          } else if (key == "length") {
-            // new measurement row
-            measurementRow = [value];
-            allMeasurements.push(measurementRow);
-          } else if (["width", "height", "count"].includes(key)) {
-            measurementRow.push(value);
+          // only process things with actual values (ignore blank fields)
+          // the html should ensure we already have required values
+          if (value) {
+            const formattedKey = FORM_KEY_FORMATTING[key];
+            // handle key formatting
+            if (formattedKey) {
+              postData.append(formattedKey, value);
+            } else if (key == "length") {
+              // new measurement row
+              measurementRow = [value];
+              allMeasurements.push(measurementRow);
+            } else if (["width", "height", "count"].includes(key)) {
+              measurementRow.push(value);
+            }
           }
         }
 
@@ -298,7 +336,6 @@
         submitButton.classList.add("hidden");
         loadingAnimation.classList.remove("hidden");
 
-
         // store postData for success page or errors
         const data = {};
         postData.forEach((value, key) => data[key] = value);
@@ -311,6 +348,8 @@
       }
 
       // EVENT LISTENERS
+      document.querySelector(".firing_temp").addEventListener("change", assumeNoGlazeIfBisque);
+      document.querySelector(".form-grid").addEventListener("change", requireInputIgnoreBlankRows);
       document.querySelector("form").addEventListener("click", updateRadioAndCheckboxClasses);
       formGrid.addEventListener("click", removeFormRow);
       addRowButton.addEventListener("click", addFormRow);
